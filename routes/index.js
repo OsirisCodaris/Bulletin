@@ -13,7 +13,7 @@ router.get('/documentation', function (req, res) {
     res.render('doc', { title: 'Documentation' });
 });
 router.get('/documentation/:page', function (req, res) {
-    res.render("components/"+req.params.page);
+    res.render("documents/"+req.params.page);
 });
 
 module.exports = router;

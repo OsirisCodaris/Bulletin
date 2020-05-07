@@ -30,10 +30,11 @@
         <a href="#" class="list-group-item list-group-item-action text-white" >Installation</a>
         <a href="#" id="classe" class="list-group-item list-group-item-action text-white">Classes</a>
         <a href="#" id="eleve" class="list-group-item list-group-item-action text-white">Elèves</a>
-        <a href="#" class="list-group-item list-group-item-action text-white">Matières</a>
-        <a href="#" class="list-group-item list-group-item-action text-white">Moyennes</a>
-        <a href="#" class="list-group-item list-group-item-action text-white">Statistique</a>
-        <a href="#" class="list-group-item list-group-item-action text-white">Bulletin</a>
+        <a href="#" id="matiere" class="list-group-item list-group-item-action text-white">Matières</a>
+        <a href="#"  id="moyenne" class="list-group-item list-group-item-action text-white">Moyennes</a>
+        <a href="#" id="stats" class="list-group-item list-group-item-action text-white">Statistique</a>
+        <a href="#" id="bulletin" class="list-group-item list-group-item-action text-white">Bulletin</a>
+        <a href="#" id="imexport" class="list-group-item list-group-item-action text-white">Importation/Exportation</a>
       </div>
     </div>
     <!-- /#sidebar-wrapper -->
@@ -92,7 +93,26 @@
     });
     $("#eleve").click(function(e) {
       e.preventDefault();
-      $("#contains").load("/documentation/eleve");
+      $("#contains").load("/documentation/Eleves");
+    });
+    $("#bulletin").click(function(e) {
+      e.preventDefault();
+      $("#contains").load("/documentation/Bulletin");
+    });
+    $("#matiere").click(function(e) {
+      e.preventDefault();
+      $("#contains").load("/documentation/matiere");
+    });
+    $("#moyennes").click(function(e) {
+      e.preventDefault();
+      $("#contains").load("/documentation/Moyennes");
+    });$("#stats").click(function(e) {
+      e.preventDefault();
+      $("#contains").load("/documentation/Stats-doc");
+    });
+    $("#imexport").click(function(e) {
+      e.preventDefault();
+      $("#contains").load("/documentation/import-export");
     });
   </script>
 
