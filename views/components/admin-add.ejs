@@ -1,0 +1,93 @@
+<div id="add">
+    <div v-if="add_success" class="alert alert-success" role="alert">
+        <i class="zmdi zmdi-check-circle"></i>
+        <span class="content">Utilisateur enregistrer avec succès :)</span>
+    </div>
+    <div v-if="add_error" class="alert alert-danger" role="alert">
+        <i class="zmdi zmdi-close-circle"></i>
+        <span class="content">{{add_error}}</span>
+    </div>
+    <div class="card">
+        <div class="card-header">Enregistrement Administrateur</div>
+        <div class="card-body">
+            <form action="" method="post" class="">
+                <div class="form-inline m-3">
+                    <div class="input-group col-12 ">
+                        <div class="input-group-addon">
+                            <i class="fa fa-envelope"></i>
+                        </div>
+                        <input type="email" v-model="add_email" name="email" placeholder="Email" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-inline m-3 ">
+                    <div class="input-group col-12 ">
+                        <div class="input-group-addon">
+                            <i class="fa fa-asterisk"></i>
+                        </div>
+                        <input type="password" v-model="add_password" name="password" placeholder="Mot de passe" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-inline m-3 ">
+                    <div class="input-group  col-12 ">
+                        <input type="password" :class="add_cls()" v-model="add_confirm" name="confrim" placeholder="Confirmez votre mot de passe" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <button class="btn btn-outline-success btn-lg" v-on:click.prevent="add" >Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+   let add=  new Vue({
+           el: '#add',
+           data: {
+               add_success: false ,
+               add_error:"",
+               add_email: '' ,
+               add_password: '',
+               add_confirm:''
+           },
+         
+           methods : {
+              
+               add_cls : function(){
+                   console.log('add_cls')
+                   return this.add_confirm === this.add_password ? "" : "is-invalid"
+               },
+               add: function(){
+                   let vm = this
+                   vm.add_success=false
+                   vm.add_error=false
+                   if(!this.add_cls() && vm.add_confirm && vm.add_email && vm.add_password && vm.add_password.length>=6){
+                       axios.post('/api/admin',{
+                       email : this.add_email,
+                       password : this.add_password
+                       })
+                       .then(function (response) {
+                           vm.add_success = true;
+                           vm.add_error= "";
+                       })
+                       .catch((error)=>{
+                           vm.add_error = error.response.data
+                           vm.add_success = false
+                       })
+                   }else{
+                       if(vm.add_password && vm.add_confirm && vm.add_email){
+                           if(vm.add_password.length<6){
+                               vm.add_error="Le mot de passe doit contenir au moins 6 caractères"
+                           }else{
+                               vm.add_error = "Les mots de passe ne sont pas identique"
+                           }
+                           
+                       }else{
+                           vm.add_error= "Veuillez remplir tout les champs"
+                       }
+                      
+                   }
+                 
+               }
+           }
+       });
+   </script>

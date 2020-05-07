@@ -1,0 +1,112 @@
+<div class="row m-t-25 " id="stat">
+    <div class="col-md-6 col-lg-3">
+        <div class="statistic__item statistic__item--green ">
+            <h2 class="number text-white ">{{ visitor }}</h2>
+            <span class="desc text-white ">Visiteurs</span>
+            <div class="icon ">
+                <i class="zmdi zmdi-account-o text-white"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="statistic__item statistic__item--orange">
+            <h2 class="number text-white">{{product_sell}}</h2>
+            <span class="desc text-white">Produits vendu</span>
+            <div class="icon">
+                <i class="zmdi zmdi-shopping-cart text-white"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="statistic__item statistic__item--blue">
+            <h2 class="number text-white">{{product_sell_mth}}</h2>
+            <span class="desc text-white">Ce mois-ci</span>
+            <div class="icon">
+                <i class="zmdi zmdi-calendar-note text-white"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="statistic__item statistic__item--red">
+            <h2 class="number text-white">$ {{gains}}</h2>
+            <span class="desc text-white">Gains Total</span>
+            <div class="icon">
+                <i class="zmdi zmdi-money text-white"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let vue = new Vue({
+        el: '#stat',
+        data: {
+           visitor : 0,
+           product_sell : 0,
+           products : [],
+           gains : 0,
+           product_sell_mth : 0,
+           price_per_product : 360000,
+           price_per_user : 10000
+        },
+        methods : {
+            getPas : function(count){
+                    if((count-this.visitor)<=100){
+                        return 1
+                    }
+                    else if((count-this.visitor) > 100 && (count-this.visitor)<=1000){
+                        return 10
+                    }
+                    else if((count-this.visitor)>1000 && (count-this.visitor)<=10000){
+                        return 100
+                    }
+                    else if((count-this.visitor)>10000 && (count-this.visitor)<=100000){
+                        return 1000
+                    }else{
+                        return 10000
+                    }
+            },
+            increment : function(count){
+                setInterval(()=>{
+                    var pas = this.getPas(count)
+                    if(this.visitor<count){
+                        this.visitor = this.visitor + pas
+                    }else{
+                        clearInterval()      
+                    }
+                },1)
+                
+            }
+        },
+        mounted : function(){
+            //setInterval(this.increment,10)
+            console.log('mounted stat')
+            let vm=this
+            axios.get('/api/visitor')
+            .then((response)=>{
+                vm.increment(response.data.count)
+                console.log(vm.visitor)
+            })
+            .catch((respone)=>{
+                console.log('erreur')
+            })
+            axios.get('/api/key')
+            .then((response)=>{
+                vm.products = response.data
+                vm.product_sell = response.data.length
+                var date = moment().subtract(1,'M')
+                vm.products.forEach(element => {
+                    vm.gains = vm.gains + ((element.number_pc-1)*vm.price_per_user) + vm.price_per_product
+                    if((moment(element.created_at)).isAfter(date)){
+                        vm.product_sell_mth++
+                    }
+                });
+            })
+            .catch((respone)=>{
+                console.log('erreur')
+            })
+        },
+        created : function() {
+            console.log('created stat')
+        }
+    });
+</script>   

@@ -1,0 +1,84 @@
+<%- include ('layout/header'); -%> 
+<div class="page-content--bge5">
+    <div class="container">
+        <div class="login-wrap" id="login">
+            <div class="login-content">
+                <div class="login-logo">
+                    <a href="#">
+                        <img src="/img/logo-nom.png" alt="BullApp" width="80" height="80">
+                    </a>
+                </div>
+                <div v-if="success" class="alert alert-success" role="alert">
+                    <i class="zmdi zmdi-check-circle"></i>
+                    <span class="content">connecté. Vous serez redirigé dans {{count}} secondes</span>
+                </div>
+                <div v-if="error" class="alert alert-danger" role="alert">
+                    <i class="zmdi zmdi-close-circle"></i>
+                    <span class="content">Vos informations sont incorrectes !! </span>
+                </div>
+                <div  class="login-form">
+                    
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input class="au-input au-input--full" type="email" name="email" v-model='email' placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input class="au-input au-input--full" type="password" name="password" v-model="password" placeholder="Password" required>
+                    </div>
+                    <div class="login-checkbox">
+                        <label>
+                            <input type="checkbox" name="remember">Se souvenir de moi ?
+                        </label>
+                        <label>
+                            <a href="/gestion/forget">Mot de passe oublié?</a>
+                        </label>
+                    </div>
+                    <button class="au-btn au-btn--block au-btn--blue m-b-20" v-on:click="log" >Connexion</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module">
+   
+let app = new Vue({
+el: '#login',
+data: {
+    success: false ,
+    error:"",
+    email: '',
+    password: '',
+    count:3
+},
+methods : {
+    log: function(){
+        let vm = this
+        vm.success=false
+        vm.error=false
+        axios.post('/gestion/login',{
+            email : this.email,
+            password : this.password
+        })
+        .then(function (response) {
+            vm.success = true;
+            vm.error= "";
+            setInterval(()=>{
+                vm.count--;
+                if(vm.count == 0){
+                    clearInterval(this);
+                    window.location.href = "/gestion";
+                }
+            },1000)
+            
+        })
+        .catch((response)=>{
+            vm.error = "Informations incorrectes"
+            vm.success = false
+            console.log(response)
+        })
+    }
+}
+})
+</script>
+<%- include('layout/footer'); -%> 

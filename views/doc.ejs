@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title><%=title %> </title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="lib/bootstrap/css/bootstrap.min2.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/simple-sidebar.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="d-flex" id="wrapper">
+
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+      <div class="sidebar-heading">Documentation</div>
+      <div class="list-group list-group-flush">
+        <a href="#" class="list-group-item list-group-item-action text-white" >Installation</a>
+        <a href="#" id="classe" class="list-group-item list-group-item-action text-white">Classes</a>
+        <a href="#" id="eleve" class="list-group-item list-group-item-action text-white">Elèves</a>
+        <a href="#" class="list-group-item list-group-item-action text-white">Matières</a>
+        <a href="#" class="list-group-item list-group-item-action text-white">Moyennes</a>
+        <a href="#" class="list-group-item list-group-item-action text-white">Statistique</a>
+        <a href="#" class="list-group-item list-group-item-action text-white">Bulletin</a>
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <button class="btn btn-primary" id="menu-toggle">Documentation</button>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Accueil<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Téléchargement</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container-fluid" id="contains">
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+            <div class="copyright centered">
+                <p>Copyright © 2018 Codaris. Tous droits reservé.</p>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+     
+</div>
+  <!-- /#wrapper -->
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="js/jquery.min.js"></script>
+<script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Menu Toggle Script -->
+  <script>
+    $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+    $("#classe").click(function(e) {
+      e.preventDefault();
+      $("#contains").load("/documentation/classe");
+    });
+    $("#eleve").click(function(e) {
+      e.preventDefault();
+      $("#contains").load("/documentation/eleve");
+    });
+  </script>
+
+</body>
+
+</html>

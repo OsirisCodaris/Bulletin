@@ -1,0 +1,22 @@
+<%- include ('layout/header'); -%> 
+<%- include ('layout/menu-sidebar'); -%> 
+<!-- PAGE CONTAINER-->
+<div class="page-container">
+<%- include ('layout/menu-navbar'); -%> 
+<!-- MAIN CONTENT-->
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <%- include ('components/stats-key'); -%>
+        <% if (locals.user) { %>
+            <%- include ('components/update-user'); -%>
+        <% }else if(locals.error){%>
+            <div class="alert alert-danger col-12" role="alert">
+                <i class="zmdi zmdi-close-circle"></i>
+                <span class="content"><%= error %></span>
+            </div>
+        <%}else{%>
+            <%- include ('components/register-user'); -%> 
+        <%} %> 
+       
+
+<%- include('layout/footer'); -%> 

@@ -1,0 +1,86 @@
+<div id="table_admin">
+    <div class="col-12">
+        <!-- DATA TABLE -->
+
+        <div class="title-5 m-b-35 col--6">Administrateurs</div>
+        <div class="filters m-b-45 col-12 text-right"><button class="btn btn-primary" type="button" @click="getAdmin()">Actualiser</button></div>
+        <div class="table table-light table-striped col-12">
+            <table class="table table-data2">
+                <thead>
+                    <tr>
+                        <th>email</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tr-shadow" v-for="admin in admins">
+                        <td>
+                            <span class="block-email">{{ admin.email }}</span>
+                        </td>
+                        <td>
+                            <div class="table-data-feature">
+                                <button class="item" data-toggle="tooltip" @click="deleted(admin.id)"   data-placement="top" title="Supprimer">
+                                    <i class="zmdi zmdi-delete"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- END DATA TABLE -->
+    </div>
+</div>
+<script >
+    let data = []
+    axios.get('/api/admin')
+    .then((response)=>{
+        response.data.forEach(element => {
+            data.push(element)
+        }); 
+    })
+    .catch((response)=>{
+        console.log(response)
+    }) 
+    let vue = new Vue({
+        el: "#table_admin",
+        data:{
+            admins: data,
+        },
+        methods : {
+            deleted : function(id){
+                let vm = this
+                Vue.dialog.confirm("Vous vraiment procéder à la suppression ?")
+                .then(($dialog)=>{
+                    axios.delete('/api/admin/'+id)
+                    .then((response)=>{
+                        var index = vm.admins.findIndex(item => item.id===id)
+                        if(index !== -1){ vm.admins.splice(index,1);}
+                    })
+                    .catch((response)=>{
+                        console.log(response)
+                    })               
+                 })
+                .catch(()=>{
+                    console.log('closed')
+                })
+                
+            },
+            getAdmin : function(){
+                let vm = this
+                axios.get('/api/admin')
+                .then((response)=>{
+                    vm.admins=[]
+                    response.data.forEach(element => {
+                        vm.admins.push(element)
+                    }); 
+
+                })
+                .catch((response)=>{
+                    console.log(response)
+                })
+            }
+        }
+      
+    });
+</script>

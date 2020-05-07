@@ -1,0 +1,63 @@
+<div class="row m-t-25 " id="stat">
+    <div class="col-md-6 col-lg-4">
+        <div class="statistic__item statistic__item--green ">
+            <h2 class="number text-white ">{{product_sell}}</h2>
+            <span class="desc text-white ">Clé générée</span>
+            <div class="icon ">
+                <i class="zmdi zmdi-key text-white"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="statistic__item statistic__item--blue">
+            <h2 class="number text-white">{{product_sell_week}}</h2>
+            <span class="desc text-white">Cette semaine</span>
+            <div class="icon">
+                <i class="zmdi zmdi-calendar-note text-white"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="statistic__item statistic__item--orange">
+            <h2 class="number text-white">{{pc_number}}</h2>
+            <span class="desc text-white">Nombre Ordinateur</span>
+            <div class="icon">
+                <i class="zmdi zmdi-laptop text-white"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let vue = new Vue({
+        el: '#stat',
+        data: {
+           product_sell : 0,
+           products : [],
+           product_sell_week : 0,
+           pc_number : 0
+        },
+        mounted : function(){
+            //setInterval(this.increment,10)
+            console.log('mounted stat')
+            let vm=this
+            axios.get('/api/key')
+            .then((response)=>{
+                vm.products = response.data
+                vm.product_sell = response.data.length
+                var date = moment().subtract(7,'d')
+                vm.products.forEach(element => {
+                    if((moment(element.created_at)).isAfter(date)){
+                        vm.product_sell_week++
+                    }
+                    vm.pc_number =vm.pc_number + element.number_pc
+                });
+            })
+            .catch((respone)=>{
+                console.log('erreur')
+            })
+        },
+        created : function() {
+            console.log('created stat')
+        }
+    });
+</script> 

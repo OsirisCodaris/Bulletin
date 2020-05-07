@@ -1,0 +1,27 @@
+<%- include ('layout/header'); -%> 
+<%- include ('layout/menu-sidebar'); -%> 
+<!-- PAGE CONTAINER-->
+<div class="page-container">
+<%- include ('layout/menu-navbar'); -%> 
+<!-- MAIN CONTENT-->
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="row col-lg-12 ">
+            <!--Profil-->
+            <div class="col-lg-6 col-12">
+                <%- include ('components/admin-update'); -%> 
+            </div>
+            <!--Fin profil-->
+            <!-- ENREGISTREMENT -->
+
+            <div class="col-lg-6 col-12">
+                <%- include ('components/admin-add'); -%> 
+            </div>
+            <!--Fin ENREGISTREMENT-->
+        </div> 
+        <!--Table Admin-->
+        <div class="row col-12">
+            <%- include ('components/admin-table'); -%> 
+        </div>
+
+<%- include('layout/footer'); -%> 

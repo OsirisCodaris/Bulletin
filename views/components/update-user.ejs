@@ -1,0 +1,146 @@
+<div class="row" id="register">
+    <div v-if="success" class="alert alert-success col-12" role="alert">
+        <i class="zmdi zmdi-check-circle"></i>
+        <span class="content">Utilisateur enregistrer avec succès :)</span>
+    </div>
+    <div v-if="error" class="alert alert-danger col-12" role="alert">
+        <i class="zmdi zmdi-close-circle"></i>
+        <span class="content">{{error}}</span>
+    </div>
+    <div class="card col-12">
+        <div class="card-header">Enregistrement Utilisateur</div>
+        <div class="card-body card-block">
+            <form v-on:submit.prevent="onSubmit">
+                <div class="form-inline m-3">
+                    <div class="input-group col-md-6 col-12 mt-2">
+                        <div class="input-group-addon">
+                            <i class="fa fa-user"></i>
+                        </div>
+                        <input type="text" id="nom" v-model="nom" name="nom" placeholder="Nom"  class="form-control" required>
+                    </div>
+                    <div class="input-group col-md-6 col-12 mt-2">
+                        <input type="text" id="prenom" v-model="prenom" name="prenom" placeholder="Prénom" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-inline m-3">
+                    <div class="input-group col-md-6 col-12 mt-2">
+                        <div class="input-group-addon">
+                            <i class="fa fa-envelope"></i>
+                        </div>
+                        <input type="email" id="email" v-model="email" name="email" placeholder="Email" class="form-control" required>
+                    </div>
+                    <div class="input-group col-md-6 col-12 mt-2">
+                        <div class="input-group-addon">
+                            <i class="fa fa-phone"></i>
+                        </div>
+                        <input type="text" id="contact" v-model="contact" name="contact" placeholder="Téléphone" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-inline m-3 ">
+                    <div class="input-group col-12">
+                        <div class="input-group-addon">
+                            <i class="fa fa-book"></i>
+                        </div>
+                        <input type="text" id="school" v-model="school" name="school" placeholder="Etablissement" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-inline m-3">
+                    <div class="input-group col-12">
+                        <span class="alert alert-warning">
+                            Ne pas modifier le mot de passe si vous voulez conservez l'ancien
+                        </span>
+                    </div>
+                </div>
+                <div class="form-inline m-3 ">
+                    <div class="input-group col-md-6 col-12 mt-2">
+                        <div class="input-group-addon">
+                            <i class="fa fa-asterisk"></i>
+                        </div>
+                        <input type="password" id="password" v-model="password" name="password" placeholder="Mot de passe" class="form-control" required>
+                    </div>
+                    <div class="input-group col-md-6 col-12 mt-2">
+                        <input type="password" id="confirm" v-model="confirm" name="password" placeholder="Confirmez votre mot de passe" class="form-control" :class="cls()" required>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <button class="btn btn-outline-warning btn-lg" v-on:click.prevent="updated" >Modifier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    let add=  new Vue({
+            el: '#register',
+            data: {
+                success: false ,
+                error:"",
+                nom :"<%=user.nom%>",
+                prenom:"<%=user.prenom%>",
+                email: '<%=user.email%>',
+                contact : "<%=user.contact%>",
+                school : "<%=user.etablissement%>",
+                password: '<%=user.password%>',
+                confirm:'<%=user.password%>',
+                id : "<%=user.id%>"
+            },
+          
+            methods : {
+                mailValidation: function(mail){
+                            
+                    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
+                    {
+                        return (true)
+                    }
+                        return (false)
+
+                },
+                cls : function(){
+                    console.log('cls')
+                    return this.confirm === this.password ? "" : "is-invalid"
+                },
+                updated: function(){
+                    let vm = this
+                    vm.success=false
+                    vm.error=false
+                    if(!this.cls()  && vm.confirm && vm.mailValidation(vm.email) && vm.password && vm.password.length>=6 && vm.contact && vm.nom && vm.prenom && vm.school){
+                        axios.put('/api/user',{
+                            id : this.id,
+                            nom : this.nom,
+                            prenom : this.prenom,
+                            email : this.email,
+                            etab : this.school,
+                            contact : this.contact,
+                            password : this.password === "<%=user.password%>" ? false: this.password
+
+                        })
+                        .then(function (response) {
+                            vm.success = true;
+                            vm.error= "";
+                        })
+                        .catch((error)=>{
+                            vm.error = error.response.data
+                            vm.success = false
+                        })
+                    }else{
+                        if(!vm.mailValidation(vm.email)){
+                            vm.error = "Entrez un mail valide codaris@example.com"
+                        }
+                        else if(vm.password && vm.confirm && vm.mailValidation(vm.email)){
+                            if(vm.password.length<6){
+                                vm.error="Le mot de passe doit contenir au moins 6 caractères"
+                            }else{
+                                vm.error = "Les mots de passe ne sont pas identique"
+                            }
+                            
+                        }
+                        else{
+                            vm.error= "Veuillez remplir tout les champs"
+                        }
+                       
+                    }
+                  
+                }
+            }
+        });
+    </script>
