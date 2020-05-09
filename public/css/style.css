@@ -17,10 +17,13 @@ body {
 
 /* Titles */
 
-h1, h2, h3, h4, h5, h6 {
+#titre, h2, h3, h4, h5, h6 {
   font-family: "Raleway";
   font-weight: 300;
-  color: #333;
+  color: white;
+}
+#titre{
+  font-size: 3.2em;
 }
 
 /* Paragraph & Typographic */
@@ -80,19 +83,23 @@ hr {
   background-color: #34495e;
   padding-top: 60px;
 }
+#download {
+  background-color: #ccae62;
+  padding-top: 60px;
+}
 
-#headerwrap h1 {
+#headerwrap h1, #download h1 {
   margin-top: 30px;
   color: white;
   font-size: 70px;
 }
 
-#headerwrap h3 {
+#headerwrap h3, #download h3 {
   color: white;
   font-size: 30px;
 }
 
-#headerwrap h5 {
+#headerwrap  h5 {
   color: white;
   font-weight: 700;
   text-align: left;

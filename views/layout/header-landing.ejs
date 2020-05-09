@@ -9,14 +9,14 @@
   <meta content="" name="description">
 
   <!-- Favicons -->
-  <link href="img/logo-simple.png" rel="icon">
+  <link href="img/logo.png" rel="icon">
   <link href="img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic|Raleway:400,300,700" rel="stylesheet">
 
   <!-- Bootstrap CSS File -->
-  <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="lib/bootstrap/css/bootstrap.min2.css" rel="stylesheet">
 
   <!-- Main Stylesheet File -->
   <link href="css/style.css" rel="stylesheet">
@@ -24,37 +24,38 @@
 
 </head>
 
-<body data-spy="scroll" data-offset="0" data-target="#navigation" style="  padding-top: 50px">
+<body  data-spy="scroll" data-offset="0" data-target="#navigation" style=" padding-top: 50px">
 
-  <!-- Fixed navbar -->
-  <div id="navigation" class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-      <div class="navbar-header m-4">
-        <a  class="smothscroll text-success" href="#home">
-          <img class="navbar-brand-x2 " src="img/logo-simple.png" height="50" width="50"/>
-          <b class="text-success">BullApp  </b>
-        </a>
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-
-        
-      </div>
-      <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav mr-5">
-          <li></li>
-          <li class="active"><a href="#home" class="smothscroll">Acceuil</a></li>
-          <li><a href="#desc" class="smothscroll">Description</a></li>
-          <li><a href="#showcase" class="smothscroll">Captures</a></li>
-          <li><a href="#contact" class="smothscroll">Contact</a></li>
-          <li><a href="/documentation" >Documentation</a></li>
-          <li><a href="#" >Téléchargement</a></li>
-
-
-        </ul>
-      </div>
-      <!--/.nav-collapse -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom fixed-top">
+    <div class="nav-brand">
+      <a  class="text-success m-2" href="/">
+        <img class="navbar-brand " src="img/logo_nom.png"  width="115"/>
+      </a>
     </div>
-  </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Accueil<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item" >
+          <a  class="nav-link smothscroll" href="#desc" >Description</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link smothscroll" href="#showcase" >Captures</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link smothscroll" href="#contact" >Contact</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/documentation" >Documentation</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/download">Téléchargement</a>
+        </li>
+      </ul>
+    </div>
+  </nav>

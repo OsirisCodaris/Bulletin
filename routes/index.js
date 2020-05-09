@@ -19,6 +19,9 @@ router.get('/documentation', function (req, res) {
 router.get('/documentation/:page', function (req, res) {
     res.render("documents/"+req.params.page);
 });
+router.get('/download', function (req, res) {
+    res.render('download', { title: 'Téléchargement' });
+});
 router.post('/mail', function (req, res) {
 
     let transporter = nodeMailer.createTransport({
