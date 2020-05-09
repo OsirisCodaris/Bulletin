@@ -172,8 +172,17 @@ hr {
 }
 .pwarning{
   padding: 2%;
-  color: crimson;
-  text-decoration: crimson;
+  background-color:  rgba(240, 204, 200, 0.966);
+  text-decoration: black;
+  border-radius: 1%;
+  margin: 2px;
+}
+.pAstuces{
+  padding: 2%;
+  background-color:  rgb(169, 193, 238);
+  text-decoration: black;
+  border-radius: 1%;
+  margin: 2px;
 }
 
 #footerwrap {
