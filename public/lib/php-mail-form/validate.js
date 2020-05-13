@@ -5,7 +5,8 @@ jQuery(document).ready(function($) {
   $('form.php-mail-form').submit(function() {
     var f = $(this).find('.form-group'),
       ferror = false,
-      emailExp = /^[^\s()<>@,;:\/]+@\w[\w\.-]+\.[a-z]{2,}$/i;
+      emailExp = /^[^\s()<>@,;:\/]+@\w[\w\.-]+\.[a-z]{2,}$/i,
+      contactExp = /^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$/gm;
 
     f.children('input').each(function() { // run all inputs
 
@@ -40,6 +41,12 @@ jQuery(document).ready(function($) {
               ferror = ierror = true;
             }
             break;
+
+          case 'contact':
+          if (!contactExp.test(i.val())) {
+            ferror = ierror = true;
+          }
+          break;
 
           case 'checked':
             if (! i.is(':checked')) {

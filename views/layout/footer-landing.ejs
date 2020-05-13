@@ -24,29 +24,34 @@
 
               <div class="form-group">
                 <label for="contact-name">Votre Nom</label>
-                <input type="name" name="name" class="form-control" id="contact-name" v-model="name" placeholder="Entrez votre nom" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
+                <input type="name" name="name" class="form-control" id="contact-name" v-model="name" placeholder="Entrez votre nom" data-rule="minlen:4" data-msg="Le nombre de caractères requis doit ëtre supérieur à 3">
                 <div class="validate"></div>
               </div>
               <div class="form-group">
                 <label for="contact-email">Votre Email</label>
-                <input type="email" name="email" class="form-control" id="contact-email" v-model="to" placeholder="Entrez votre email" data-rule="email" data-msg="Please enter a valid email">
+                <input type="email" name="email" class="form-control" id="contact-email" v-model="to" placeholder="Entrez votre email" data-rule="email" data-msg="L'adresse mail n'est pas valide">
+                <div class="validate"></div>
+              </div>
+              <div class="form-group">
+                <label for="contact-number">Votre Numéro de Téléphone</label>
+                <input type="text" name="contact" class="form-control" id="contact-number" v-model="contact" placeholder="Entrez votre numéro" data-rule="contact" data-msg="Entrez un contact valide">
                 <div class="validate"></div>
               </div>
               <div class="form-group">
                 <label for="contact-subject">Sujet</label>
-                <input type="text" name="subject" class="form-control" id="contact-subject" v-model="subject" placeholder="Le Sujet" data-rule="minlen:4" data-msg="Please enter at least 8 chars of subject">
+                <input type="text" name="subject" class="form-control" id="contact-subject" v-model="subject" placeholder="Le Sujet" data-rule="minlen:4" data-msg="Le nombre de caractères requis doit ëtre supérieur à 3">
                 <div class="validate"></div>
               </div>
 
               <div class="form-group">
                 <label for="contact-message">Votre Message</label>
-                <textarea class="form-control" name="message" id="contact-message" v-model="message" placeholder="Votre Message" rows="5" data-rule="required" data-msg="Please write something for us"></textarea>
+                <textarea class="form-control" name="message" id="contact-message" v-model="message" placeholder="Votre Message" rows="5" data-rule="required" data-msg="Dites nous plus"></textarea>
                 <div class="validate"></div>
               </div>
 
               <div class="loading"></div>
               <div class="error-message"></div>
-              <div class="sent-message">Your message has been sent. Thank you!</div>
+              <div class="sent-message">Votre message a été envoyé. Merci!</div>
 
               <div class="form-send">
                 <button type="submit" class="btn btn-large" v-on:click="send">Envoyez le Message</button>
@@ -66,34 +71,6 @@
       </p>
     </div>
   </div>
-  <script type="module">
-    let app = new Vue({
-      data : {
-        to : "",
-        name: "",
-        subject:"",
-        message : ""
-      },
-      methods : {
-        send : ()=>{
-          vm= this;
-          axios.post("/mail",{
-            to = vm.to,
-            name = vm.name,
-            subject = vm.subject,
-            message = vm.message
-          })
-          .then((response)=>{
-            console.log("email send");
-          })
-          .catch((error)=>{
-            console.log("error");
-          })
-        }
-      }
-
-    });
-  </script>
   <!-- JavaScript Libraries -->
   <script src="js/jquery.min.js"></script>
   <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>

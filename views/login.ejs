@@ -40,9 +40,15 @@
         </div>
     </div>
 </div>
-<script type="module">
+<script>
+    try {
+      eval("class Foo {}");
+      eval("var bar = (x) => x+1");
+    } catch (e) { alert("Votre version de navigateur n'est pas supporter\nPour une meilleure experience changez ou mettez votre navigateur à jour") }
+    </script>
+<script >
    
-let app = new Vue({
+var app = new Vue({
 el: '#login',
 data: {
     success: false ,
@@ -53,7 +59,7 @@ data: {
 },
 methods : {
     log: function(){
-        let vm = this
+        var vm = this
         vm.success=false
         vm.error=false
         axios.post('/gestion/login',{
@@ -63,7 +69,7 @@ methods : {
         .then(function (response) {
             vm.success = true;
             vm.error= "";
-            setInterval(()=>{
+            setInterval(function(){
                 vm.count--;
                 if(vm.count == 0){
                     clearInterval(this);
@@ -72,13 +78,13 @@ methods : {
             },1000)
             
         })
-        .catch((response)=>{
+        .catch(function(response){
             vm.error = "Informations incorrectes"
             vm.success = false
             console.log(response)
         })
     }
 }
-})
+});
 </script>
 <%- include('layout/footer'); -%> 
