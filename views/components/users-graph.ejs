@@ -1,0 +1,228 @@
+<div class="row" id="graphe">
+    <div class="col-lg-12">
+    <div class="table-data__tool">
+      <div class="table-data__tool-left">
+          <div class="rs-select2--light rs-select2--md">
+            <select class="js-example-matcher-start" name="selectLg" id="selectLg" class="form-control-lg form-control" >
+              <option value="all">Tous les utilisateurs</option>  
+              <option v-for="user in users" value="user.id">{{user.nom}} {{user.prenom}}, {{user.etablissement}}</option>
+            </select>
+              <div class="dropDownSelect2"></div>
+          </div>
+          <div class="rs-select2--light rs-select2--sm">
+              <select class="js-select2" name="time" id="time">
+                  <option v-for="year in years" :value="year">{{year}}</option>
+              </select>
+              <div class="dropDownSelect2"></div>
+          </div>
+      </div>
+      <div class="table-data__tool-right">
+          <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
+              <select class="js-select2" name="type" id="type">
+                  <option selected="selected" value="line">Line</option>
+                  <option value="bar">Barre</option>
+              </select>
+              <div class="dropDownSelect2"></div>
+          </div>
+          <button class="au-btn au-btn-icon au-btn--green au-btn--small" @click="selectchange">
+            <i class="zmdi zmdi-refresh"></i>Générer</button>
+      </div>
+    </div>
+        <div class="au-card m-b-30">
+            <div class="au-card-inner">
+                <h3 class="title-2 m-4">Graphe d'utilisation en {{year}}</h3> 
+                <div id="graph-container">
+                  <canvas id="results-graph"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+try {
+var option = {
+      responsive: true,
+      tooltips: {
+        mode: 'index',
+        titleFontSize: 12,
+        titleFontColor: '#000',
+        bodyFontColor: '#000',
+        backgroundColor: '#fff',
+        titleFontFamily: 'Poppins',
+        bodyFontFamily: 'Poppins',
+        cornerRadius: 3,
+        intersect: false,
+      },
+      legend: {
+        display: false,
+        position: 'top',
+        labels: {
+          usePointStyle: true,
+          fontFamily: 'Poppins',
+        },
+
+
+      },
+      scales: {
+        xAxes: [{
+          display: true,
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          scaleLabel: {
+            display: false,
+            labelString: 'Month'
+          },
+          ticks: {
+            fontFamily: "Poppins"
+          }
+        }],
+        yAxes: [{
+          display: true,
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Value',
+            fontFamily: "Poppins"
+          },
+          ticks: {
+            fontFamily: "Poppins"
+          }
+        }]
+      },
+      title: {
+        display: false,
+      }
+    };
+
+var app =  new Vue({
+    el: "#graphe",
+    data:{
+        year:moment().year(),
+        selected:"",
+        pc_connect:[],
+        users:[],
+        months: 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_')
+    },
+    computed : {
+      labels(){
+        var labels =[]
+        this.months.forEach(month=>{
+          labels.push(month.substring(0,3))
+        })
+        return labels
+      },
+      years(){
+        var years = []
+        years.push(moment().year())
+        this.pc_connect.forEach(pc=>{
+          var date = moment(pc.created_at).year()
+          years.indexOf(date) ===-1 ? years.push(date) : console.log('exist') 
+        })
+        return years.sort().reverse()
+      }
+      
+    },
+    methods:{
+      resetCanvas() {
+        (function ($) {
+          var width_canvas = $('#results-graph').width();
+          var height_canvas = $('#results-graph').height();
+          $('#results-graph').remove(); // this is my <canvas> element
+          $('#graph-container').append('<canvas id="results-graph"><canvas>');
+          var canvas = document.querySelector('#results-graph'); // why use jQuery?
+          var  ctx = canvas.getContext('2d');
+          ctx.canvas.width = width_canvas; // resize to parent width
+          ctx.canvas.height = height_canvas; // resize to parent height
+        })(jQuery);
+      },
+      selectchange(){
+        var sel = document.getElementById('selectLg');
+        var type = document.getElementById('type').value;
+        var time = document.getElementById('time').value;
+        this.year=time
+        if(sel.selectedIndex >0){
+          this.selected=this.users[sel.selectedIndex-1].id
+        }
+        else{
+          this.selected = 0;
+        }
+        this.resetCanvas()
+        this.buildchart(this.selected,time,type)
+      }, 
+        values(id,time){
+            var year = time
+            var val = []
+            this.months.forEach(month=>{
+                var count=0;
+                this.pc_connect.forEach(pc => {
+                  if(pc.id_user==id || id==0){
+                    var date= moment(pc.created_at)
+                    if(date.year() == year && date.month()== (moment().month(month)).month()){
+                        count=count+1;
+                    }
+                  }
+                });
+                console.log(count)
+                val.push(count);
+            })
+            return val;
+        },
+        buildchart(id,time,type){
+            var ctx = document.getElementById("results-graph");
+            var vm = this;
+            var myChart = new Chart(ctx, {
+            type: type,
+            data: {
+                labels : vm.labels,
+                type: type,
+                defaultFontFamily: 'Poppins',
+                datasets: [{
+                data: this.values(id,time),
+                label: "Connexions",
+                backgroundColor: 'rgba(0,103,255,.15)',
+                borderColor: 'rgba(0,103,255,0.5)',
+                borderWidth: 3.5,
+                pointStyle: 'circle',
+                pointRadius: 5,
+                pointBorderColor: 'transparent',
+                pointBackgroundColor: 'rgba(0,103,255,0.5)',
+                },]
+            },
+            options: option
+            });
+        }
+    },
+    mounted:function(){
+        let vm=this
+        axios.get('/api/user')
+        .then((response)=>{
+            vm.users= response.data
+        })
+        .catch((respone)=>{
+            console.log('erreur')
+        })
+        axios.get('/api/visitor/connect')
+        .then((response)=>{
+            vm.pc_connect= response.data
+            this.buildchart(0,moment().year(),'line');
+        })
+        .catch((respone)=>{
+            console.log('erreur')
+        })
+       
+    }
+});
+
+//Team chart
+
+
+
+} catch (error) {
+console.log(error);
+}
+</script>

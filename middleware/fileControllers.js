@@ -28,6 +28,17 @@ let fileControllers = {
             }
         })
     },
+    showAll: function (req, res) {
+        SaveFile.showAll((rows) => {
+            if (rows.length >0) {
+                res.status(200).json(rows)
+                return
+            } else {
+                res.status(404).end("Pas de Contenu")
+                return
+            }
+        })
+    },
     download: function (req, res) {
         var fileName = req.params.name
         SaveFile.show({ file: fileName }, (rows) => {

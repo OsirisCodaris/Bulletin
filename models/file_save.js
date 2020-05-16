@@ -28,7 +28,7 @@ class SaveFile {
     static showAll(cb) {
         connection.query('SELECT * FROM save_file', (err, result) => {
             if (err) throw err
-            cb(result.map((row) => new SaveFile(row)))
+            cb(result)
         })
     }
     static show(data, cb) {

@@ -4,6 +4,9 @@ var router = express.Router();
 var fileController = require('../../middleware/fileControllers');
 
 // view file by id user
+router.route('/')
+    .get(fileController.showAll)
+// view file by id user
 router.route('/show/:id')
     .get(fileController.show)
 // download file 

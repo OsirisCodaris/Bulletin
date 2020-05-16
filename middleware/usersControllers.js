@@ -2,6 +2,8 @@ let Users = require('../models/users')
 let encrypt = require('encrypt-password')
 
 let ActivePc = require('../models/pc_actived') 
+let Connect = require('../models/pc_connect')
+
 
 
 let UsersControllers = {
@@ -41,7 +43,6 @@ let UsersControllers = {
     deleted : function (req,res){
         let data = req.params
         Users.delete(data,(rows)=>{
-            console.log(rows)
             if(rows.affectedRows){
                 return res.status(200).send("Supprimé avec succès")
             }else{
@@ -62,7 +63,8 @@ let UsersControllers = {
     },
     check : function (req, res,next) {
         let data = req.body
-        if (data.password.length > 6) {
+        console.log(data)
+        if (data.password.length >= 6) {
             let password = encrypt(data.password)
             Users.show({ email: data.email }, (rows) => {
                 if (rows) {
@@ -89,6 +91,7 @@ let UsersControllers = {
         ActivePc.show({ id_key: data.id_key }, (rows) => {
             if (rows.find(row => row.adresse_mac == data.adresse_mac)) {
                 req.session.user = rows;
+                Connect.add(data,(cb)=>{});
                 return res.status(200).json(data);
             } else {
                 if (rows.length == data.number_pc) {                                        
@@ -97,6 +100,7 @@ let UsersControllers = {
                     ActivePc.add(data, (rows) => {
                         if (rows.affectedRows) {                                                    
                             req.session.user = rows;
+                            Connect.add(data,(cb)=>{});
                             return res.status(200).json(data);
                         } else {
                             return res.status(500).end(rows.message)
