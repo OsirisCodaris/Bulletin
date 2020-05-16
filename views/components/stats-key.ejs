@@ -1,5 +1,5 @@
 <div class="row m-t-25 " id="stat">
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-3">
         <div class="statistic__item statistic__item--green ">
             <h2 class="number text-white ">{{product_sell}}</h2>
             <span class="desc text-white ">Clé générée</span>
@@ -8,8 +8,17 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-3">
         <div class="statistic__item statistic__item--blue">
+            <h2 class="number text-white">{{product_sell_mth}}</h2>
+            <span class="desc text-white">Ce mois-ci</span>
+            <div class="icon">
+                <i class="zmdi zmdi-calendar-note text-white"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="statistic__item statistic__item--orange">
             <h2 class="number text-white">{{product_sell_week}}</h2>
             <span class="desc text-white">Cette semaine</span>
             <div class="icon">
@@ -17,12 +26,12 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6 col-lg-4">
-        <div class="statistic__item statistic__item--orange">
-            <h2 class="number text-white">{{pc_number}}</h2>
-            <span class="desc text-white">Nombre Ordinateur</span>
+    <div class="col-md-6 col-lg-3">
+        <div class="statistic__item statistic__item--red">
+            <h2 class="number text-white">$ {{gains}}</h2>
+            <span class="desc text-white">Gains Total</span>
             <div class="icon">
-                <i class="zmdi zmdi-laptop text-white"></i>
+                <i class="zmdi zmdi-money text-white"></i>
             </div>
         </div>
     </div>
@@ -34,7 +43,31 @@
            product_sell : 0,
            products : [],
            product_sell_week : 0,
-           pc_number : 0
+           pc_number : 0,
+           days_product_free : 90,
+           price_per_product : 360000,
+           price_per_user : 10000
+        },
+        computed :{
+            product_sell_mth(){
+                var sell_mth = 0;
+                var date = moment().subtract(1,'M')
+                this.products.forEach(element => {
+                    if((moment(element.created_at)).isAfter(date)){
+                        sell_mth++
+                    }
+                });
+                return sell_mth
+            },
+            gains(){
+                var gain = 0
+                this.products.forEach(element => {
+                    if(element.valid_for>this.days_product_free){
+                        gain = gain + ((element.number_pc-1)*this.price_per_user) + this.price_per_product
+                    }
+                });
+                return gain
+            }
         },
         mounted : function(){
             //setInterval(this.increment,10)

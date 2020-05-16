@@ -1,7 +1,7 @@
 <div class="row" id = "cmd"> 
     <div class="col-md-12">
         <!-- DATA TABLE -->
-        <h3 class="title-5 m-b-35">Commandes</h3>
+        <h3 class="title-5 m-b-35">Utilisateurs</h3>
         <div class="table-data__tool">
             <div class="table-data__tool-left">
                 <div class="rs-select2--light rs-select2--sm">
@@ -28,6 +28,7 @@
                 </div>
             </div>
         </div>
+        <input class="au-input au-input--xl" type="text" @keyup="filtre" name="search" v-model="search" placeholder="Recherche noms, prénom et établissement" />
         <div class="table-responsive table-responsive-data2">
             <table class="table table-data2">
                 <thead>
@@ -91,27 +92,15 @@
     let commande = new Vue({
         el: '#cmd',
         data: {
+           globalUsers :[],
            product : [],
            users : [],
-           users_product : [],
            price_product : 360000,
            price_per_person: 10000
         },
-        methods : {
-            add_commande : function (){
-                window.location.href = '/gestion/keyGenerator'
-            },
-            getProducts : async function (){
-                let vm=this
-                this.users_product =[]
-                try{
-                    var result = await axios.get('/api/user')
-                    vm.users = result.data
-                    var res = await axios.get('/api/key')
-                    vm.product = res.data
-                }catch(e){
-                    console.log("erreur")
-                }
+        computed : {
+            users_product(){
+                var productNuser = [];
                 this.users.forEach(user => {
                     this.product.forEach(item => {
                         if(user.id_key === item.id){             
@@ -121,10 +110,36 @@
                                 price : this.price_product + (item.number_pc - 1)* this.price_per_person
                             }       
                             item.created_at = moment(item.created_at)
-                        this.users_product.push( Object.assign({},item,user,extras))
+                            productNuser.push( Object.assign({},item,user,extras))
                         }
                     });
                 });
+                return productNuser;
+            }
+        },
+        methods : {
+            filtre(){
+                this.users = this.globalUsers
+                if(this.search){
+                    this.users= this.users.filter(user=> ((user.nom).toUpperCase()).includes((this.search).toUpperCase()) || ((user.prenom).toUpperCase()).includes((this.search).toUpperCase())||((user.etablissement).toUpperCase()).includes((this.search).toUpperCase()))
+                }else{
+                    this.users = this.globalUsers
+                }
+            },
+            add_commande : function (){
+                window.location.href = '/gestion/keyGenerator'
+            },
+            getProducts : async function (){
+                let vm=this
+                try{
+                    var result = await axios.get('/api/user')
+                    vm.users = result.data
+                    vm.globalUsers = result.data
+                    var res = await axios.get('/api/key')
+                    vm.product = res.data
+                }catch(e){
+                    console.log("erreur")
+                }
             },
             edit: function(id){
                 window.location.href ="/gestion/keyGenerator/"+id
@@ -212,19 +227,23 @@
             },
             deleted : function(user){
                 let vm =this
-                Vue.dialog.confirm("Vous vraiment procéder à la suppression ?")
-                .then(($dialog)=>{
-                    axios.delete('/api/user/'+user.id)
+                this.$dialog.confirm("Vous vraiment procéder à la suppression ?",{
+                    loader : true
+                })
+                .then((dialog)=>{
+                    axios.delete('/api/user/'+user.id+'?key='+user.id_key)
                     .then((response)=>{
                        vm.getProducts()
+                       loader = false
+                       dialog.close()
+                       this.$dialog.alert("supprimé")
                     })
-                    .catch((response)=>{
-                        console.log(response)
+                    .catch((error)=>{
+                        dialog.close()
+                        this.$dialog.alert(error.data.response)
                     })               
-                 })
-                .catch(()=>{
-                    console.log('closed')
                 })
+               
             }
         },
         

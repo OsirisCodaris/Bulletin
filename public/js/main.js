@@ -1668,3 +1668,48 @@
   }
 
 })(jQuery);
+(function ($) {
+  // USE STRICT
+  "use strict";
+
+  // Load more
+  try {
+    function matchStart(params, data) {
+      // If there are no search terms, return all of the data
+      if ($.trim(params.term) === '') {
+       
+        return data;
+      }
+    
+      var filteredChildren = [];
+     /* $.each(data, function (child) {
+        console.log(data)
+
+        console.log('at')
+       
+      });*/
+      if (data.text.toUpperCase().includes(params.term.toUpperCase())) {
+        filteredChildren.push(data);
+      }
+      // If we matched any of the timezone group's children, then set the matched children on the group
+      // and return the group object
+      if (filteredChildren.length) {
+        var modifiedData = $.extend({}, data,filteredChildren, true);
+        // You can return modified objects from here
+        // This includes matching the `children` how you want in nested data sets
+        console.log(modifiedData)
+        return modifiedData;
+      }
+    
+      // Return `null` if the term should not be displayed
+      return null;
+    }
+    
+    $(".js-example-matcher-start").select2({
+      matcher: matchStart
+    });
+} catch (error) {
+  console.log(error);
+}
+
+})(jQuery);

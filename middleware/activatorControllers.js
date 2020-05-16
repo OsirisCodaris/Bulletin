@@ -32,6 +32,14 @@ let activatorControllers = {
         })
         
     },
+    deleted : function(req,res,next){
+        let keys = req.query
+        Activator.delete(keys,(rows)=>{
+            if(rows.affectedRows){
+                next()
+            }
+        })
+    },
     updated : function(req,res){
         let data = req.body
         Activator.update(data,(rows)=>{

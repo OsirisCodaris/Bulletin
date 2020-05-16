@@ -1,0 +1,145 @@
+<div class="row" id = "cmd"> 
+    <div class="col-md-12">
+        <!-- DATA TABLE -->
+        <h3 class="title-5 m-b-35">Utilisation de l'application</h3>
+        <input class="au-input au-input--xl" type="text" @keyup="filtre" name="search" v-model="search" placeholder="Recherche noms, prénom et établissement" />
+        <div class="table-responsive table-responsive-data2">
+            <table class="table table-data2">
+                <thead>
+                    <tr>
+                        <th>Coordonnées</th>
+                        <th>Etablissement</th>
+                        <th>Nombre de Pc</th>
+                        <th>Date Abonnement</th>
+                        <th>Date Expiration</th>
+                        <th>Nb. Fichiers</th>
+                        <th>Nb. Connexions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr class="tr-shadow" v-for="user_p in users_product">
+                            <td>
+                                <div class="table-data__info">
+                                    <h6>{{user_p.nom}} {{user_p.prenom}}</h6>
+                                    <span>
+                                        <a :href.prevent="'mailto:'+user_p.email">{{user_p.email}}</a>
+                                    </span>
+                                    <span>
+                                        <a href="#"><strong>{{user_p.contact}}</strong></a>
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="desc">{{user_p.etablissement}}</td>
+                            <td>{{user_p.number_pc}}</td>
+                            <td>{{user_p.created_at.format('LL')}}</td>
+                            <td>
+                                <span class=" status--process item" data-toggle="tooltip" data-placement="top" :title="user_p.expired.format('LL')" v-if="user_p.status" >{{user_p.expired.fromNow()}}</span>
+                                <span class=" status--denied item" data-toggle="tooltip" data-placement="top" :title="user_p.expired.format('LL')" v-else="user_p.status" >{{user_p.expired.fromNow()}}</span>
+                            </td>
+                            <td>{{getCountfile(user_p.id)}}</td>
+                            <td>
+                                <span  data-toggle="tooltip" data-placement="top" :title="getCountConnect(user_p.id).lastConnect"  > {{ getCountConnect(user_p.id).length}}</span>
+                               
+                            </td>
+                            <tr class="spacer"></tr>
+                        </tr>
+                        
+                </tbody>
+            </table>
+        </div>
+        <!-- END DATA TABLE -->
+    </div>
+</div>
+<script>
+    let commande = new Vue({
+        el: '#cmd',
+        data: {
+           search:"",
+           files :[],
+           globalUsers : [],
+           product : [],
+           users : [],
+           pc_connect:[],
+           price_product : 360000,
+           price_per_person: 10000
+        },
+        computed : {
+            users_product(){
+                var productNuser = [];
+                this.users.forEach(user => {
+                    this.product.forEach(item => {
+                        if(user.id_key === item.id){             
+                            var extras = {
+                                expired : moment(item.created_at).add(item.valid_for,'d'),
+                                status : (moment(item.created_at).add((item.valid_for-6),'d')).isAfter(moment()), // pour etre en rouge a partir de 5 jours
+                                price : this.price_product + (item.number_pc - 1)* this.price_per_person
+                            }       
+                            item.created_at = moment(item.created_at)
+                            productNuser.push( Object.assign({},item,user,extras))
+                        }
+                    });
+                });
+                return productNuser;
+            }
+        },
+        methods : {
+            filtre(){
+                this.users = this.globalUsers
+                if(this.search){
+                    this.users= this.users.filter(user=> ((user.nom).toUpperCase()).includes((this.search).toUpperCase()) || ((user.prenom).toUpperCase()).includes((this.search).toUpperCase())||((user.etablissement).toUpperCase()).includes((this.search).toUpperCase()))
+                }else{
+                    this.users = this.globalUsers
+                }
+            },
+            getProducts : async function (){
+                let vm=this
+                try{
+                    var result = await axios.get('/api/user')
+                    vm.users = result.data
+                    vm.globalUsers = result.data
+                    var res = await axios.get('/api/key')
+                    vm.product = res.data
+                    var resp = await axios.get('/api/file')
+                    vm.files = resp.data
+                }catch(e){
+                    console.log("erreur")
+                }
+            },
+            getCountfile(id){
+                return this.files.filter(file=> file.id_user == id).length
+            },
+            getCountConnect(id){
+                function compare(a, b) {
+                // Use toUpperCase() to ignore character casing
+                const dateA = moment(a.created_at);
+                const dateB = moment(b.created_at);
+
+                let comparison = 0;
+                if (dateA.isAfter(dateB)) {
+                    comparison = 1;
+                } else if (dateB.isAfter(dateA)) {
+                    comparison = -1;
+                }
+                return comparison;
+                }
+                var table = (this.pc_connect.filter(pc=> pc.id_user == id)).sort(compare).reverse()
+                var data ={
+                    length : table.length,
+                    lastConnect : table[0] ? moment(table[0].created_at).format('LL') : "Pas encore connecté"
+                }
+                
+                return data
+            }
+        },
+        
+        mounted : async function(){
+            this.getProducts();
+            var vm= this
+            axios.get('/api/visitor/connect')
+            .then((response)=>{
+                vm.pc_connect= response.data
+            })
+          
+        }
+    });
+</script>

@@ -43,10 +43,30 @@
            visitor : 0,
            product_sell : 0,
            products : [],
-           gains : 0,
-           product_sell_mth : 0,
+           days_product_free : 90,
            price_per_product : 360000,
            price_per_user : 10000
+        },
+        computed :{
+            product_sell_mth(){
+                var sell_mth = 0;
+                var date = moment().subtract(1,'M')
+                this.products.forEach(element => {
+                    if((moment(element.created_at)).isAfter(date)){
+                        sell_mth++
+                    }
+                });
+                return sell_mth
+            },
+            gains(){
+                var gain = 0
+                this.products.forEach(element => {
+                    if(element.valid_for>this.days_product_free){
+                        gain = gain + ((element.number_pc-1)*this.price_per_user) + this.price_per_product
+                    }
+                });
+                return gain
+            }
         },
         methods : {
             getPas : function(count){
@@ -93,13 +113,6 @@
             .then((response)=>{
                 vm.products = response.data
                 vm.product_sell = response.data.length
-                var date = moment().subtract(1,'M')
-                vm.products.forEach(element => {
-                    vm.gains = vm.gains + ((element.number_pc-1)*vm.price_per_user) + vm.price_per_product
-                    if((moment(element.created_at)).isAfter(date)){
-                        vm.product_sell_mth++
-                    }
-                });
             })
             .catch((respone)=>{
                 console.log('erreur')

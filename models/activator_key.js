@@ -70,5 +70,10 @@ class Activator {
         cb(result)
         })
     }
+    static delete(data,cb){
+        connection.query('DELETE from activator_key WHERE id= ?', [data.key], (err, result) => {
+            cb(result)
+        })
+    }
 }
 module.exports = Activator
