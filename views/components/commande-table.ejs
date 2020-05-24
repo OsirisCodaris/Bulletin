@@ -95,6 +95,7 @@
            globalUsers :[],
            product : [],
            users : [],
+           days_product_free : 90,
            price_product : 360000,
            price_per_person: 10000
         },
@@ -107,7 +108,7 @@
                             var extras = {
                                 expired : moment(item.created_at).add(item.valid_for,'d'),
                                 status : (moment(item.created_at).add((item.valid_for-6),'d')).isAfter(moment()), // pour etre en rouge a partir de 5 jours
-                                price : this.price_product + (item.number_pc - 1)* this.price_per_person
+                                price : item.valid_for >= this.days_product_free ? (this.price_product + (item.number_pc - 1)* this.price_per_person) : "gratuit"
                             }       
                             item.created_at = moment(item.created_at)
                             productNuser.push( Object.assign({},item,user,extras))
