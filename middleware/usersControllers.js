@@ -53,7 +53,6 @@ let UsersControllers = {
     updated: function (req,res){
         let data = req.body
         Users.update(data,(rows)=>{
-            console.log(rows)
             if(rows.affectedRows){
                 return res.status(200).send("Modifier avec succès")
             }else{
@@ -63,7 +62,6 @@ let UsersControllers = {
     },
     check : function (req, res,next) {
         let data = req.body
-        console.log(data)
         if (data.password.length >= 6) {
             let password = encrypt(data.password)
             Users.show({ email: data.email }, (rows) => {
@@ -72,6 +70,7 @@ let UsersControllers = {
                         return res.status(400).end("Mot de passe incorrect ! :(")
                     }else{
                         req.user = rows
+                        console.log(rows)
                         req.user.adresse_mac = data.adresse_mac
                         next()
                     }
