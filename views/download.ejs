@@ -72,22 +72,15 @@
             <h4>Inscrivez-vous et profitez de l'application de génération de bulletins</h4>
             <br>
           </div>
-
+        
           
           <div class="col-lg-8">
             <div class="row" id="register">
+                
               <div class="card col-12">
                 
                 <div class="card-header">Enregistrement Utilisateur</div>
-                <div class="card-body card-block">
-                  <div v-if="error" class="alert alert-danger col-12" role="alert">
-                    <i class="zmdi zmdi-close-circle"></i>
-                    <span class="content">{{error}}</span>
-                  </div>
-                  <div v-if="success" class="alert alert-success col-12" role="alert">
-                    <i class="zmdi zmdi-check-circle"></i>
-                    <span class="content">Votre téléchargement en cours... <br> Cliquez <a href="/download/setup.exe">ici</a> pour démarrer manuellement</span>
-                  </div>
+                
                     <form v-on:submit.prevent="onSubmit">
                         <div class="form-inline m-3">
                             <div class="input-group col-md-6 col-12 mt-2">
@@ -137,16 +130,34 @@
                             <button class="btn btn-outline-success btn-lg" v-on:click.prevent="add" >Enregistrer</button>
                         </div>
                     </form>
+                    <div class="card-body card-block">
+                  <div v-if="error" class="alert alert-danger col-12" role="alert">
+                    <i class="zmdi zmdi-close-circle"></i>
+                    <span class="content">{{error}}</span>
+                  </div>
+                  <div v-if="success" class="alert alert-success col-12" role="alert">
+                    <i class="zmdi zmdi-check-circle"></i>
+                    <span class="content">Enregistrement effectuer<br>Cliquez <a href="/download/setup.exe">ici</a> pour lancer le téléchargement</span>
+                  </div>
                 </div>
               </div>
           </div>
           </div>
-          <div class="col-lg-4">
+          <div class="col-lg-4 my-auto">
             <br>
-            <img class="d-none d-lg-block mx-auto" src="img/download-bull.png" height="300">
+            <img class="d-none d-lg-block mx-auto img-fluid" src="img/download-bull.png" height="300">
          </div>
+         <div class="col-12">
+            <br>
+            <br>
+            <span class="text-center text-white">Vous avez déjà un compte ?</span>
+            <div class="form-group text-center">
+                    <a href="/download/setup.exe"><button class="btn btn-secondary btn-lg" ><span class="text-white">Télécharger l'application</span> </button></a>
+            </div>
         </div>
-        <br>
+        </div>
+      
+        
         <br>
       </div>
       <!--/ .container -->
@@ -218,7 +229,6 @@
                       .then(function (response) {
                           vm.success= true;
                           vm.error= "";
-                          axios.get("/download/setup.exe");
                       })
                       .catch(function (error){
                           vm.error = error.response.data;
